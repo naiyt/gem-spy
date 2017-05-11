@@ -1,0 +1,22 @@
+[
+  {
+    "caption": "Gem Spy: Open Gem In New Window",
+    "command": "spy_on_gems",
+    "args": { "add_to_current_window": false }
+  },
+  {
+    "caption": "Gem Spy: Open Gem In Current Window",
+    "command": "spy_on_gems",
+    "args": { "add_to_current_window": true }
+  },
+  {
+    "caption": "Preferences: Gem Spy - Default",
+    "command": "open_file",
+    "args": {"file": "${packages}/gem-spy/gem-spy.sublime-settings"},
+  },
+  {
+    "caption": "Preferences: Gem Spy - User",
+    "command": "open_file",
+    "args": {"file": "${packages}/User/gem-spy.sublime-settings"}
+  }
+]
