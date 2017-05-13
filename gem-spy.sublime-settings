@@ -1,3 +1,4 @@
 {
-  "sublime_path": "/usr/local/bin/subl"
+  "sublime_path": "/usr/local/bin/subl",
+  "debug": false
 }

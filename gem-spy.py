@@ -114,4 +114,5 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
         subprocess.Popen(args)
 
     def log(self, message):
-        print("Gem Spy Logger: " + message)
+        if self.settings.get('debug'):
+            print("Gem Spy Logger: " + message)
