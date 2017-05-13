@@ -12,16 +12,14 @@ import tempfile
 import hashlib
 from shutil import copyfile
 
+
 class SpyOnGemsCommand(sublime_plugin.WindowCommand):
     def __init__(self, window):
         self.settings = sublime.load_settings('gem-spy.sublime-settings')
         self.gems = []
-
         super(SpyOnGemsCommand, self).__init__(window)
 
 
-    #
-    #
     # Lifecycle
 
     def run(self, **kwargs):
@@ -42,9 +40,6 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
             self.open_in_sublime([open_option, gem_path.rstrip()])
 
 
-
-    #
-    #
     # Gem fetching and caching
 
     def get_gems(self):
@@ -111,9 +106,6 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
         return hash_md5.hexdigest()
 
 
-
-    #
-    #
     # Utilities
 
     def run_bundle_command(self, command):
@@ -142,6 +134,7 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
 
 class MissingGemfileLockException(Exception):
     pass
+
 
 class BadBundlerPathException(Exception):
     pass
