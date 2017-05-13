@@ -110,8 +110,12 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
         return output
 
     def open_in_sublime(self, args):
-        args.insert(0, self.settings.get('sublime_path'))
-        subprocess.Popen(args)
+        try:
+            args.insert(0, self.settings.get('sublime_path'))
+            subprocess.Popen(args)
+        except FileNotFoundError:
+            error = "Could not find Sublime Executable. Check the sublime_path in your gem-spy settings."
+            self.log(error)
 
     def log(self, message):
         if self.settings.get('debug'):
