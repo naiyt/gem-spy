@@ -30,9 +30,9 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
             self.gems = self.get_gems()
             self.window.show_quick_panel(self.gems, self.on_selected)
         except MissingGemfileLockException:
-            message = "No Gemfile.lock in current directory"
-            sublime.error_message(message)
-            self.log(message)
+            self.log("No Gemfile.lock in current directory", error=True)
+        except BadBundlerPathException:
+            self.log("Could not find bundler", error=True)
 
     def on_selected(self, selected):
         if selected != -1:
@@ -117,11 +117,14 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
     # Utilities
 
     def run_bundle_command(self, command):
-        current_path = self.window.folders()[0]
-        rbenv_command = os.path.expanduser('~/.rbenv/shims/bundle ' + command)
-        process = subprocess.Popen(rbenv_command.split(), cwd=current_path, stdout=subprocess.PIPE)
-        output = process.communicate()[0]
-        return output
+        try:
+            current_path = self.window.folders()[0]
+            rbenv_command = os.path.expanduser('~/.rbenv/shims/bundle ' + command)
+            process = subprocess.Popen(rbenv_command.split(), cwd=current_path, stdout=subprocess.PIPE)
+            output = process.communicate()[0]
+            return output
+        except FileNotFoundError:
+            raise BadBundlerPathException
 
     def open_in_sublime(self, args):
         try:
@@ -131,9 +134,14 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
             error = "Could not find Sublime Executable. Check the sublime_path in your gem-spy settings."
             self.log(error)
 
-    def log(self, message):
+    def log(self, message, error=False):
+        if error:
+            sublime.error_message(message)
         print("Gem Spy Logger: " + message)
 
 
 class MissingGemfileLockException(Exception):
+    pass
+
+class BadBundlerPathException(Exception):
     pass
