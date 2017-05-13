@@ -35,13 +35,14 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
     def on_selected(self, selected):
         if selected != -1:
             gem_name = re.search('(.*)\(', self.gems[selected]).group(1)
-            gem_path = self.run_bundle_command("show " + gem_name)
+            gem_path = self.run_bundle_command("show " + gem_name) # TODO - cache this
             open_option = '-a' if self.opts['add_to_current_window'] else '-n'
             self.open_in_sublime([open_option, gem_path.rstrip()])
 
 
     # Gem fetching and caching
 
+    # TODO: simplify this somehow
     def get_gems(self):
         project_name = self.window.folders()[0].split('/')[-1]
         cache_file_path = '/'.join([self.cache_directory(), project_name + "_gemfile.cache"])
@@ -108,6 +109,7 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
 
     # Utilities
 
+    # TODO - rvm support
     def run_bundle_command(self, command):
         try:
             current_path = self.window.folders()[0]
@@ -120,7 +122,7 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
 
     def open_in_sublime(self, args):
         try:
-            args.insert(0, self.settings.get('sublime_path'))
+            args.insert(0, self.settings.get('sublime_path')) # TODO - get this dynamically?
             subprocess.Popen(args)
         except FileNotFoundError:
             error = "Could not find Sublime Executable. Check the sublime_path in your gem-spy settings."
