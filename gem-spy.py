@@ -74,10 +74,16 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
         return gems_list
 
     def cache_is_valid(self, cache_json, gemfile_lock_md5):
-        valid_cache = cache_json and cache_json['md5'] == gemfile_lock_md5
-        log_message = "cache hit" if valid_cache else "cache miss"
+        cache_hit = False
+
+        if cache_json:
+            md5_present = 'md5' in cache_json
+            gems_present = 'gems' in cache_json and isinstance(cache_json['gems'], list)
+            cache_hit = md5_present and gems_present and cache_json['md5'] == gemfile_lock_md5
+
+        log_message = "cache hit" if cache_hit else "cache miss"
         self.log(log_message)
-        return valid_cache
+        return cache_hit
 
     def cache_directory(self):
         sublime_cache = sublime.cache_path()
