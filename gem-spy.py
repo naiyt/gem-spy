@@ -132,8 +132,7 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
             self.log(error)
 
     def log(self, message):
-        if self.settings.get('debug'):
-            print("Gem Spy Logger: " + message)
+        print("Gem Spy Logger: " + message)
 
 
 class MissingGemfileLockException(Exception):
