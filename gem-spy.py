@@ -25,9 +25,14 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
     # Lifecycle
 
     def run(self, **kwargs):
-        self.opts = kwargs
-        self.gems = self.get_gems()
-        self.window.show_quick_panel(self.gems, self.on_selected)
+        try:
+            self.opts = kwargs
+            self.gems = self.get_gems()
+            self.window.show_quick_panel(self.gems, self.on_selected)
+        except MissingGemfileLockException:
+            message = "No Gemfile.lock in current directory"
+            sublime.error_message(message)
+            self.log(message)
 
     def on_selected(self, selected):
         if selected != -1:
@@ -46,6 +51,9 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
         project_name = self.window.folders()[0].split('/')[-1]
         cache_file_path = '/'.join([self.cache_directory(), project_name + "_gemfile.cache"])
         gemfile_lock_path = self.window.folders()[0] + "/Gemfile.lock"
+
+        if not os.path.exists(gemfile_lock_path):
+            raise MissingGemfileLockException
 
         gems_list = []
 
@@ -126,3 +134,7 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
     def log(self, message):
         if self.settings.get('debug'):
             print("Gem Spy Logger: " + message)
+
+
+class MissingGemfileLockException(Exception):
+    pass
