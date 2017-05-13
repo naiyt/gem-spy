@@ -1,0 +1,15 @@
+TODO
+
+Features:
+  - open the homepage for the gem
+  - create a local fork of the gem
+  - set your local repo to use that fork
+  - other OS support
+  - rvm support
+  - clean cache command
+  - cache the gem filepath? (maybe, might be overkill)
+
+Chores:
+  - README
+  - Add to Sublime Package Manager
+  - Get the Sublime path dynamically
