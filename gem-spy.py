@@ -10,7 +10,7 @@ import sublime
 import sublime_plugin
 import tempfile
 import hashlib
-from shutil import copyfile
+from shutil import copyfile, rmtree
 
 
 class SpyOnGemsCommand(sublime_plugin.WindowCommand):
@@ -24,9 +24,14 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
 
     def run(self, **kwargs):
         try:
-            self.opts = kwargs
-            self.gems = self.get_gems()
-            self.window.show_quick_panel(self.gems, self.on_selected)
+            if 'clear_cache' in kwargs and kwargs['clear_cache']:
+                cache_dir = self.cache_directory()
+                rmtree(self.cache_directory())
+                self.log("Deleted cache directory: " + cache_dir)
+            else:
+                self.opts = kwargs
+                self.gems = self.get_gems()
+                self.window.show_quick_panel(self.gems, self.on_selected)
         except MissingGemfileLockException:
             self.log("No Gemfile.lock in current directory", error=True)
         except BadBundlerPathException:

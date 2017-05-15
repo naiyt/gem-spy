@@ -10,6 +10,11 @@
     "args": { "add_to_current_window": true }
   },
   {
+    "caption": "Gem Spy: Clear Cache",
+    "command": "spy_on_gems",
+    "args": { "clear_cache": true }
+  },
+  {
     "caption": "Preferences: Gem Spy - Default",
     "command": "open_file",
     "args": {"file": "${packages}/gem-spy/gem-spy.sublime-settings"},
