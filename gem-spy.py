@@ -22,11 +22,11 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
     def run(self, **kwargs):
         self.opts = kwargs
         try:
-            if 'pristine_one' in self.opts and self.opts['pristine_one']:
+            if self.run_command('pristine_one'):
                 self.pristine_one()
-            elif 'pristine_all' in self.opts and self.opts['pristine_all']:
+            elif self.run_command('pristine_all'):
                 self.pristine_all()
-            elif 'clear_cache' in self.opts and self.opts['clear_cache']:
+            elif self.run_command('clear_cache'):
                 self.clear_cache()
             else:
                 self.open_gem()
@@ -162,6 +162,9 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
         if error:
             sublime.error_message(message)
         print("Gem Spy Logger: " + message)
+
+    def run_command(self, command):
+        return command in self.opts and self.opts[command]
 
 
 class MissingGemfileLockException(Exception):
