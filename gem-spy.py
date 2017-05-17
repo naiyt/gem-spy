@@ -19,30 +19,57 @@ class SpyOnGemsCommand(sublime_plugin.WindowCommand):
         self.gems = []
         super(SpyOnGemsCommand, self).__init__(window)
 
-
-    # Lifecycle
-
     def run(self, **kwargs):
+        self.opts = kwargs
         try:
-            if 'clear_cache' in kwargs and kwargs['clear_cache']:
-                cache_dir = self.cache_directory()
-                rmtree(self.cache_directory())
-                self.log("Deleted cache directory: " + cache_dir)
+            if 'pristine_one' in self.opts and self.opts['pristine_one']:
+                self.pristine_one()
+            elif 'pristine_all' in self.opts and self.opts['pristine_all']:
+                self.pristine_all()
+            elif 'clear_cache' in self.opts and self.opts['clear_cache']:
+                self.clear_cache()
             else:
-                self.opts = kwargs
-                self.gems = self.get_gems()
-                self.window.show_quick_panel(self.gems, self.on_selected)
+                self.open_gem()
         except MissingGemfileLockException:
             self.log("No Gemfile.lock in current directory", error=True)
         except BadBundlerPathException:
             self.log("Could not find bundler", error=True)
 
-    def on_selected(self, selected):
+
+    # Commands
+
+    def pristine_one(self):
+        self.gems = self.get_gems()
+        self.window.show_quick_panel(self.gems, self.on_selected_pristine)
+
+    def pristine_all(self):
+        self.run_bundle_command("exec gem pristine --all")
+        self.log("Restored all gems to pristine state")
+
+    def clear_cache(self):
+        cache_dir = self.cache_directory()
+        rmtree(self.cache_directory())
+        self.log("Deleted cache directory: " + cache_dir)
+
+    def open_gem(self):
+        self.gems = self.get_gems()
+        self.window.show_quick_panel(self.gems, self.on_selected_open)
+
+
+    # Callbacks
+
+    def on_selected_open(self, selected):
         if selected != -1:
             gem_name = re.search('(.*)\(', self.gems[selected]).group(1)
             gem_path = self.run_bundle_command("show " + gem_name)
             open_option = '-a' if self.opts['add_to_current_window'] else '-n'
             self.open_in_sublime([open_option, gem_path.rstrip()])
+
+    def on_selected_pristine(self, selected):
+        if selected != -1:
+            gem_name = re.search('(.*)\(', self.gems[selected]).group(1)
+            self.run_bundle_command("exec gem pristine " + gem_name)
+            self.log("Restored " + gem_name + " to pristine state")
 
 
     # Gem fetching and caching

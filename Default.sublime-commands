@@ -10,6 +10,16 @@
     "args": { "add_to_current_window": true }
   },
   {
+    "caption": "Gem Spy: Restore a Gem to Pristine State",
+    "command": "spy_on_gems",
+    "args": { "pristine_one": true }
+  },
+  {
+    "caption": "Gem Spy: Restore all Gems to Pristine State",
+    "command": "spy_on_gems",
+    "args": { "pristine_all": true }
+  },
+  {
     "caption": "Gem Spy: Clear Cache",
     "command": "spy_on_gems",
     "args": { "clear_cache": true }

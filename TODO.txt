@@ -4,7 +4,6 @@ Features:
   - create a local fork of the gem
   - set your local repo to use that fork
   - list what is using your local version
-  - "gem pristine" command
   - other OS support
   - rvm support
 
@@ -13,3 +12,4 @@ Chores:
   - Add to Sublime Package Manager
   - Get the Sublime path dynamically
   - Cleanup the code a bit
+  - Actually check the output of the bundle commands
